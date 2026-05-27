@@ -20,28 +20,32 @@ public class BufferedQueue {
     private boolean isFull() {
         return (back+1)%(size+1) == front;
     }
-    public void put (Object val) {
-        if (isFull()) {
+    public synchronized void put (Object val) throws InterruptedException {
+        while (isFull()) {
             System.out.println("The queue is full");
-            return;
+            wait();//this releases the lock
         }
         arr[back] = val;
         back = (back + 1)%(size+1);
+        notifyAll();//informs both producer and consumer, but for consumer to consume
+        System.out.println(Thread.currentThread().getName() + " : ");
         System.out.println("Element Insert : " + val.toString());
     }
-    public Object pop () {
+    public synchronized Object pop () throws InterruptedException {
         Object val = null;
-        if (isEmpty()) {
+        while (isEmpty()) {
             System.out.println("The queue is empty");
-            return val;
+            wait();
         }
         val = arr[front];
         arr[front] = null;
         front = (front+1)%(size+1);
+        notifyAll();//informs both producer and consumer, but for producer to produce
+        System.out.println(Thread.currentThread().getName() + " : " + val);
         return val;
     }
     @Override
-    public String toString() {
+    public synchronized String toString() {
         StringBuffer stringBuffer = new StringBuffer();
         for (int i=0; i<= this.size; i++) {
             if (arr[i] == null)
