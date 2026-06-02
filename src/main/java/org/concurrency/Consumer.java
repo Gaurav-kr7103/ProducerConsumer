@@ -7,9 +7,9 @@ public class Consumer implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println(Thread.currentThread().getName() + " : ");
         try {
-            System.out.println("Element popped : " + queue.pop());
+            queue.pop();
+//            System.out.println("Element popped : " + queue.pop());
         } catch (InterruptedException e) {
             System.exit(13);
         }

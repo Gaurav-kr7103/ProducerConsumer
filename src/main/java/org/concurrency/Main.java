@@ -18,7 +18,7 @@ public class Main {
             executor.execute(new Consumer(queue));
         }
         for (int i=0; i<4; i++) {
-            executor.execute(() -> System.out.println(queue.toString()));
+            executor.execute(() -> System.out.println("\n" + queue.toString()));
         }
     }
 }
