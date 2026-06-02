@@ -1,21 +1,24 @@
 package org.concurrency;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //making a queue of size 5
-        // 1,2,3,4,5
-        // popping 1
-        // null, 2,3,4,5
-        // inserting 6
+        ExecutorService executor = Executors.newFixedThreadPool(10);
         BufferedQueue queue = new BufferedQueue(5);
-        for (int i=1; i<=5; i++) {
-            queue.put(i);
+        //produce
+        for (int i=0; i<10; i++) {
+            executor.execute(new Producer(queue));
         }
-        System.out.println(queue.toString());
-        System.out.println(queue.pop());
-        queue.put(6);
-        System.out.println(queue.toString());
+        //consume
+        for (int i=0; i<10; i++) {
+            executor.execute(new Consumer(queue));
+        }
+        for (int i=0; i<4; i++) {
+            executor.execute(() -> System.out.println("\n" + queue.toString()));
+        }
     }
 }
